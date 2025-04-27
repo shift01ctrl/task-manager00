@@ -7,6 +7,8 @@ import CardViewPage from "@/pages/CardViewPage"
 import TableViewPage from "@/pages/TableViewPage"
 import CalendarViewPage from "@/pages/CalendarViewPage"
 import TimelineViewPage from "@/pages/TimelineViewPage"
+import SearchPage from "@/pages/SearchPage"
+import SettingsPage from "@/pages/SettingsPage"
 import LoginPage from "@/pages/LoginPage"
 import SignupPage from "@/pages/SignupPage"
 import ProtectedRoute from "@/components/ProtectedRoute"
@@ -224,6 +226,22 @@ function App() {
               element={
                 <ProtectedRoute>
                   <TimelineViewPage {...sharedProps} />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/search"
+              element={
+                <ProtectedRoute>
+                  <SearchPage {...sharedProps} />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <SettingsPage onLogout={handleLogout} />
                 </ProtectedRoute>
               }
             />

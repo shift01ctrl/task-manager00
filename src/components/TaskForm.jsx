@@ -12,12 +12,16 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-const TaskForm = ({ newTask, setNewTask, addTask }) => {
+const TaskForm = ({ newTask, setNewTask, addTask, users }) => {
   const [priority, setPriority] = useState("medium")
   const [description, setDescription] = useState("")
+  const [startDate, setStartDate] = useState("")
+  const [endDate, setEndDate] = useState("")
   const [dueDate, setDueDate] = useState("")
   const [status, setStatus] = useState("todo")
   const [taskImage, setTaskImage] = useState(null)
+  const [assignedTo, setAssignedTo] = useState("")
+  const [taskType, setTaskType] = useState("feature")
   const fileInputRef = useRef(null)
 
   const handleImageChange = (e) => {
@@ -36,15 +40,23 @@ const TaskForm = ({ newTask, setNewTask, addTask }) => {
     addTask(e, {
       priority,
       description,
+      startDate,
+      endDate,
       dueDate: dueDate || new Date().toISOString(),
       status,
-      image: taskImage
+      image: taskImage,
+      assignedTo,
+      taskType
     })
     setDescription("")
+    setStartDate("")
+    setEndDate("")
     setDueDate("")
     setPriority("medium")
     setStatus("todo")
     setTaskImage(null)
+    setAssignedTo("")
+    setTaskType("feature")
     if (fileInputRef.current) {
       fileInputRef.current.value = ""
     }
@@ -71,6 +83,35 @@ const TaskForm = ({ newTask, setNewTask, addTask }) => {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Task description..."
+          />
+        </div>
+      </div>
+      <div className="grid gap-4 md:grid-cols-3">
+        <div>
+          <Label htmlFor="startDate">Start Date 📅</Label>
+          <Input
+            id="startDate"
+            type="datetime-local"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+          />
+        </div>
+        <div>
+          <Label htmlFor="endDate">End Date 📅</Label>
+          <Input
+            id="endDate"
+            type="datetime-local"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+          />
+        </div>
+        <div>
+          <Label htmlFor="dueDate">Due Date 📅</Label>
+          <Input
+            id="dueDate"
+            type="datetime-local"
+            value={dueDate}
+            onChange={(e) => setDueDate(e.target.value)}
           />
         </div>
       </div>
@@ -102,25 +143,45 @@ const TaskForm = ({ newTask, setNewTask, addTask }) => {
           </Select>
         </div>
         <div>
-          <Label htmlFor="dueDate">Due Date 📅</Label>
-          <Input
-            id="dueDate"
-            type="datetime-local"
-            value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
-          />
+          <Label htmlFor="assignedTo">Assigned To 👤</Label>
+          <Select value={assignedTo} onValueChange={setAssignedTo}>
+            <SelectTrigger id="assignedTo">
+              <SelectValue placeholder="Select user" />
+            </SelectTrigger>
+            <SelectContent>
+              {users?.map((user) => (
+                <SelectItem key={user.id} value={user.id}>
+                  {user.name} 👤
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <div>
-          <Label htmlFor="image">Task Image 🖼️</Label>
-          <Input
-            id="image"
-            type="file"
-            accept="image/*"
-            ref={fileInputRef}
-            onChange={handleImageChange}
-            className="cursor-pointer"
-          />
+          <Label htmlFor="taskType">Task Type 🏷️</Label>
+          <Select value={taskType} onValueChange={setTaskType}>
+            <SelectTrigger id="taskType">
+              <SelectValue placeholder="Select type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="feature">Feature ⭐</SelectItem>
+              <SelectItem value="bug">Bug 🐛</SelectItem>
+              <SelectItem value="epic">Epic 🚀</SelectItem>
+              <SelectItem value="story">Story 📖</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
+      </div>
+      <div>
+        <Label htmlFor="image">Task Image 🖼️</Label>
+        <Input
+          id="image"
+          type="file"
+          accept="image/*"
+          ref={fileInputRef}
+          onChange={handleImageChange}
+          className="cursor-pointer"
+        />
       </div>
       {taskImage && (
         <div className="relative mt-4 h-40 w-full overflow-hidden rounded-lg">
